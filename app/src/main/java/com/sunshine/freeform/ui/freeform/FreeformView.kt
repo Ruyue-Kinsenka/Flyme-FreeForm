@@ -303,8 +303,8 @@ class FreeformView(
 
     fun initSystemService() {
         try {
-            if (!rikka.shizuku.Shizuku.pingBinder()) {
-                Log.e(TAG, "Shizuku binder is not available")
+            if (!com.sunshine.freeform.utils.ServiceUtils.isInitialized()) {
+                Log.e(TAG, "System services are not initialized")
                 return
             }
             

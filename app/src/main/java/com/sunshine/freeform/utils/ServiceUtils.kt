@@ -9,9 +9,6 @@ import android.hardware.input.IInputManager
 import android.util.Log
 import android.view.IWindowManager
 import android.view.WindowManager
-import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 
 /**
  * @date 2021/2/1
@@ -36,16 +33,9 @@ object ServiceUtils {
     // 标记服务是否已成功初始化
     private var isInitialized = false
     
-    /**
-     * 安全地初始化 Shizuku 系统服务
-     * 
-     * @param context 应用上下文
-     * @return 初始化是否成功
-     */
-    fun initWithShizuku(context: Context): Boolean {
-        if (!Shizuku.pingBinder()) {
-            Log.e(TAG, "Shizuku binder is not available")
-            return false
+    fun init(context: Context): Boolean {
+        if (isInitialized) {
+            return true
         }
         
         try {
@@ -53,32 +43,15 @@ object ServiceUtils {
             displayManager = context.getSystemService(DisplayManager::class.java)
             windowManager = context.getSystemService(WindowManager::class.java)
             
-            // 使用 Shizuku 初始化系统服务
-            activityManager = IActivityManager.Stub.asInterface(
-                ShizukuBinderWrapper(
-                    SystemServiceHelper.getSystemService("activity")
-                )
-            )
-            activityTaskManager = IActivityTaskManager.Stub.asInterface(
-                ShizukuBinderWrapper(
-                    SystemServiceHelper.getSystemService("activity_task")
-                )
-            )
-            iWindowManager = IWindowManager.Stub.asInterface(
-                ShizukuBinderWrapper(
-                    SystemServiceHelper.getSystemService("window")
-                )
-            )
-            inputManager = IInputManager.Stub.asInterface(
-                ShizukuBinderWrapper(
-                    SystemServiceHelper.getSystemService("input")
-                )
-            )
+            activityManager = SystemServiceHelper.getActivityManager()
+            activityTaskManager = SystemServiceHelper.getActivityTaskManager()
+            iWindowManager = SystemServiceHelper.getWindowManager()
+            inputManager = SystemServiceHelper.getInputManager()
             
             isInitialized = true
             return true
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to initialize Shizuku services: ${e.message}")
+            Log.e(TAG, "Failed to initialize services: ${e.message}", e)
             return false
         }
     }

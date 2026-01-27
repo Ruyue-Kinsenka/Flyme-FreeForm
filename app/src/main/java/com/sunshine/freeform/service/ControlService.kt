@@ -9,14 +9,12 @@ import com.sunshine.freeform.bean.MotionEventBean
 import com.sunshine.freeform.systemapi.InputManager
 import com.sunshine.freeform.systemapi.ServiceManager
 import com.sunshine.freeform.utils.ShellUtils
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
+import com.sunshine.freeform.utils.SystemServiceHelper
 
 /**
  * @author sunshine
  * @date 2021/3/17
  */
-
 class ControlService : IControlService.Stub() {
     private var inputManager: InputManager? = null
 

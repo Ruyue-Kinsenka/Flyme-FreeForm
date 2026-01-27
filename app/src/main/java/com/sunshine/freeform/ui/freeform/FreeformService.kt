@@ -80,8 +80,8 @@ class FreeformService: Service(), ScreenListener.ScreenStateListener {
         }
 
     override fun onCreate() {
-        if (!ServiceUtils.initWithShizuku(this)) {
-            Log.e(TAG, "Failed to initialize Shizuku services")
+        if (!ServiceUtils.init(this)) {
+            Log.e(TAG, "Failed to initialize services")
             stopSelf()
             return
         }

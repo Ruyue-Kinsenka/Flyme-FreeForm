@@ -18,10 +18,8 @@ import com.sunshine.freeform.app.MiFreeform
 import com.sunshine.freeform.broadcast.StartFreeformReceiver
 import com.sunshine.freeform.ui.floating.ChooseAppFloatingView
 import com.sunshine.freeform.ui.freeform.FreeformService
+import com.sunshine.freeform.utils.SystemServiceHelper
 import kotlinx.coroutines.*
-import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -110,24 +108,12 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
         registerReceiver(startFreeformReceiver, IntentFilter("com.sunshine.freeform.start_freeform"), RECEIVER_EXPORTED)
 
         try {
-            // 检查Shizuku是否可用
-            if (!Shizuku.pingBinder()) {
-                Log.e(TAG, "Shizuku binder is not available, waiting for connection...")
-                // 尝试重新初始化
-                MiFreeform.me.retryInitShizuku()
-                return
-            }
-            
-            iWindowManager = IWindowManager.Stub.asInterface(
-                ShizukuBinderWrapper(
-                    SystemServiceHelper.getSystemService("window"))
-            )
+            iWindowManager = SystemServiceHelper.getWindowManager()
             rotationWatcher = object : IRotationWatcher.Stub() {
                 override fun onRotationChanged(rotation: Int) {
                     scope.launch(Dispatchers.Main) {
                         displayRotation = rotation
 
-                        //q220902.3 如果程序崩溃的话，那么resources.configuration.orientation获取到的方向是错误的，所以不应该用该方法
                         val tempScreenRotation = if (displayRotation == Surface.ROTATION_0 || displayRotation == Surface.ROTATION_180) {
                             Configuration.ORIENTATION_PORTRAIT
                         } else {
@@ -156,7 +142,7 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
             }
             iWindowManager.watchRotation(rotationWatcher, Display.DEFAULT_DISPLAY)
         } catch (e: Exception) {
-            Log.e(TAG, "Error initializing Shizuku", e)
+            Log.e(TAG, "Error initializing window manager", e)
         }
 
         displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager

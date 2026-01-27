@@ -22,8 +22,6 @@ import com.sunshine.freeform.databinding.ActivityPermissionBinding
 import com.sunshine.freeform.hook.utils.HookTest
 import com.sunshine.freeform.ui.splash.SplashActivity
 import com.sunshine.freeform.utils.PermissionUtils
-import rikka.sui.Sui
-
 
 class PermissionActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -53,7 +51,6 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
         binding.content.materialCardViewOverlayInfo.setOnClickListener(this)
         binding.content.materialCardViewXposedInfo.setOnClickListener(this)
         binding.content.materialCardViewAccessibilityInfo.setOnClickListener(this)
-        binding.content.materialCardViewShizukuInfo.setOnClickListener(this)
         binding.content.materialCardViewNotificationInfo.setOnClickListener(this)
 
         checkPermission()
@@ -76,7 +73,7 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
         checkNotificationPermission()
         checkKeepAliveService()
 
-        val r1 = checkShizukuPermission()
+        val r1 = checkSystemPermission()
         val r3 = checkOverlayPermission()
 
         return r1 && r3
@@ -110,16 +107,16 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
         return result
     }
 
-    private fun checkShizukuPermission(): Boolean {
-        val result = MiFreeform.me?.isRunning?.value!!
+    private fun checkSystemPermission(): Boolean {
+        val result = MiFreeform.me?.isRunning?.value ?: false
         if (result) {
             binding.content.infoShizukuBg.setBackgroundColor(getColor(R.color.success_color))
             binding.content.imageViewShizukuService.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_done))
-            binding.content.textViewShizukuServiceInfo.text = if (Sui.isSui()) getString(R.string.sui_start) else getString(R.string.shizuku_start)
+            binding.content.textViewShizukuServiceInfo.text = getString(R.string.system_start)
         } else {
             binding.content.infoShizukuBg.setBackgroundColor(getColor(R.color.warn_color))
             binding.content.imageViewShizukuService.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_error_white))
-            binding.content.textViewShizukuServiceInfo.text = getString(R.string.shizuku_no_start)
+            binding.content.textViewShizukuServiceInfo.text = getString(R.string.system_no_start)
         }
         return result
     }
@@ -158,12 +155,6 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
                     setPositiveButton(getString(R.string.done)) {_, _ ->}
                     setCancelable(false)
                     create().show()
-                }
-            }
-            R.id.materialCardView_shizuku_info -> {
-                MiFreeform.me?.initShizuku()
-                MiFreeform.me?.isRunning?.observe(this) {
-                    checkShizukuPermission()
                 }
             }
             R.id.materialCardView_accessibility_info -> {

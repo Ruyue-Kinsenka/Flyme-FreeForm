@@ -14,9 +14,8 @@ import com.sunshine.freeform.BuildConfig
 import com.sunshine.freeform.IControlService
 import com.sunshine.freeform.service.ControlService
 import com.sunshine.freeform.utils.ServiceUtils
+import com.sunshine.freeform.utils.SystemServiceHelper
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import rikka.shizuku.Shizuku
-import rikka.sui.Sui
 import java.lang.StringBuilder
 
 /**
@@ -26,33 +25,6 @@ import java.lang.StringBuilder
 class MiFreeform : Application() {
     val isRunning = MutableLiveData(false)
     var controlService: IControlService? = null
-
-    private val onRequestPermissionResultListener =
-        Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
-            if (requestCode == SUI_CODE && grantResult == PackageManager.PERMISSION_GRANTED) {
-                initShizuku()
-            }
-        }
-
-    private val binderReceivedListener = Shizuku.OnBinderReceivedListener {
-        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.requestPermission(SUI_CODE)
-        } else {
-            initShizuku()
-        }
-    }
-
-    private val binderDeadListener = Shizuku.OnBinderDeadListener {
-        isRunning.postValue(false)
-    }
-
-    private val userServiceArgs =
-        Shizuku.UserServiceArgs(
-            ComponentName(
-                BuildConfig.APPLICATION_ID,
-                ControlService::class.java.name
-            )
-        ).processNameSuffix("service")
 
     private val userServiceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -70,21 +42,14 @@ class MiFreeform : Application() {
         lateinit var me: MiFreeform
         private const val TAG = "MiFreeForm"
         const val PACKAGE_NAME = "com.sunshine.freeform"
-        //软件版本，该版本指需要再次展示介绍界面的版本
         const val VERSION = 1
-        //隐私策略版本，用于展示隐私策略
         const val VERSION_PRIVACY = 1
         const val APP_SETTINGS_NAME = "app_settings"
-        private const val SUI_CODE = 0
 
         private val log = StringBuilder()
 
         fun addLog(tag: String, functionName: String,  e: Exception) {
             log.append("$tag,$functionName:${e.message}")
-        }
-
-        init {
-            Sui.init(BuildConfig.APPLICATION_ID)
         }
     }
 
@@ -94,9 +59,7 @@ class MiFreeform : Application() {
 
         DynamicColors.applyToActivitiesIfAvailable(this);
 
-        Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
-        Shizuku.addRequestPermissionResultListener(onRequestPermissionResultListener)
-        Shizuku.addBinderDeadListener(binderDeadListener)
+        initSystemServices()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -106,34 +69,15 @@ class MiFreeform : Application() {
         }
     }
 
-    private fun bindShizukuService() {
+    private fun initSystemServices() {
         try {
-            Shizuku.bindUserService(userServiceArgs, userServiceConnection)
+            SystemServiceHelper.init(this)
+            ServiceUtils.init(this)
+            isRunning.postValue(true)
+            Log.i(TAG, "System services initialized successfully")
         } catch (e: Exception) {
-            addLog(TAG, "bindShizukuService", e)
-        }
-    }
-
-    fun initShizuku() {
-        if (pingServiceBinder()) return
-        
-        bindShizukuService()
-        
-        // 尝试初始化ServiceUtils，如果失败则不继续执行
-        if (!ServiceUtils.initWithShizuku(this)) {
-            Log.e(TAG, "Failed to initialize Shizuku services")
-            // 系统服务初始化失败，可能是Shizuku未就绪
+            Log.e(TAG, "Failed to initialize system services", e)
             isRunning.postValue(false)
-        }
-    }
-
-    // 添加重试机制，可以重新尝试初始化Shizuku
-    fun retryInitShizuku() {
-        if (Shizuku.pingBinder()) {
-            initShizuku()
-        } else {
-            // Shizuku服务不可用，等待服务恢复
-            Log.w(TAG, "Shizuku service is not available, waiting for connection...")
         }
     }
 
@@ -143,13 +87,5 @@ class MiFreeform : Application() {
 
     fun execShell(command: String, useRoot: Boolean): Boolean {
         return controlService?.execShell(command, useRoot)!!
-    }
-
-    fun initShizuku(callback: ShizukuBindCallback) {
-        initShizuku()
-    }
-
-    interface ShizukuBindCallback {
-        fun onBind()
     }
 }

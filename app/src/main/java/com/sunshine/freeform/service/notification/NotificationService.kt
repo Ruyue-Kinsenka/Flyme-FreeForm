@@ -17,14 +17,13 @@ import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
 import com.sunshine.freeform.room.NotificationAppsEntity
 import com.sunshine.freeform.systemapi.UserHandle
+import com.sunshine.freeform.utils.SystemServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 import java.lang.reflect.Method
 import java.util.Arrays.stream
 
@@ -165,7 +164,7 @@ class NotificationService : NotificationListenerService(),
 //            val mTarget = mTargetField.get(pendingIntent)
 //            Log.e(TAG, "$mTarget")
 //
-//            val iActivityManager = IActivityManager.Stub.asInterface(ShizukuBinderWrapper(SystemServiceHelper.getSystemService("activity")))
+//            val iActivityManager = SystemServiceHelper.getActivityManager()
 //
 //            intent = iActivityManager?.getIntentForIntentSender(mTarget as IIntentSender)
 //        } catch (e: Exception) {

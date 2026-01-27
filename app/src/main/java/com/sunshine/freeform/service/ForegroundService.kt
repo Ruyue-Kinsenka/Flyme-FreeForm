@@ -27,12 +27,10 @@ import com.sunshine.freeform.broadcast.StartFreeformReceiver
 import com.sunshine.freeform.ui.floating.ChooseAppFloatingView
 import com.sunshine.freeform.ui.floating.FloatingActivity
 import com.sunshine.freeform.ui.freeform.FreeformService
+import com.sunshine.freeform.utils.SystemServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -122,24 +120,12 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
 
             //q221208.1 修复屏幕旋转后侧边栏不贴边的问题
             try {
-                // 检查Shizuku是否可用
-                if (!Shizuku.pingBinder()) {
-                    Log.e(TAG, "Shizuku binder is not available, waiting for connection...")
-                    // 尝试重新初始化
-                    MiFreeform.me.retryInitShizuku()
-                    return
-                }
-                
-                iWindowManager = IWindowManager.Stub.asInterface(
-                    ShizukuBinderWrapper(
-                        SystemServiceHelper.getSystemService("window"))
-                )
+                iWindowManager = SystemServiceHelper.getWindowManager()
                 rotationWatcher = object : IRotationWatcher.Stub() {
                     override fun onRotationChanged(rotation: Int) {
                         scope.launch(Dispatchers.Main) {
                             displayRotation = rotation
 
-                            //q220902.3 如果程序崩溃的话，那么resources.configuration.orientation获取到的方向是错误的，所以不应该用该方法
                             val tempScreenRotation = if (displayRotation == Surface.ROTATION_0 || displayRotation == Surface.ROTATION_180) {
                                 Configuration.ORIENTATION_PORTRAIT
                             } else {

@@ -16,7 +16,7 @@
     <string name="reject">拒絕</string>
 
     <!--FreeformView-->
-    <string name="service_not_running">Shizuku/Sui服務冇運行，你係咪為米窗授權咗Shizuku/Sui？</string>
+    <string name="service_not_running">系統服務冇運行</string>
     <string name="overlay_no_permission">冇懸浮窗權限</string>
     <string name="app_is_running">該應用已經處於小窗模式</string>
     <string name="create_display_fail">創建屏幕失敗，呢表示米窗可能唔可以喺呢個ROM上運行，請聯繫開發者</string>
@@ -50,6 +50,7 @@
     <string name="start_qq_fail">打開QQ失敗</string>
     <string name="sui_start_short">Sui已激活</string>
     <string name="shizuku_start_short">Shizuku已激活</string>
+    <string name="system_start_short">系統服務已激活</string>
     <string name="xposed_start_short">Xposed存在</string>
     <string name="home_accessibility_warn_message">當前保活模式為無障礙服務，所以需要開啟無障礙服務先可以正常運行。如果喺你嘅設備上無障礙服務有問題或者你唔想使用無障礙模式，可以去設定中切換保活模式</string>
     <string name="go_to_start_accessibility">開啟無障礙</string>
@@ -74,10 +75,12 @@
     <!--content_permission-->
     <string name="xposed_no_start">（可選）Xposed冇激活</string>
     <string name="xposed_start">Xposed存在，請注意勾選系統框架並重啟</string>
-    <string name="permission_info">為咗保證軟件嘅正常運行，米窗需要申請以下權限。其中，Xposed權限可以防止小窗中嘅應用跳出到全屏；Shizuku/Sui權限用於打開小窗等核心功能；無障礙權限用於保證米窗嘅存活；疊加窗口權限用於展示小窗界面；通知使用權用於打開通知應用嘅小窗。</string>
-    <string name="shizuku_no_start">點擊授權Shizuku/Sui</string>
+    <string name="permission_info">為咗保證軟件嘅正常運行，米窗需要申請以下權限。其中，Xposed權限可以防止小窗中嘅應用跳出到全屏；系統權限用於打開小窗等核心功能；無障礙權限用於保證米窗嘅存活；疊加窗口權限用於展示小窗界面；通知使用權用於打開通知應用嘅小窗。</string>
+    <string name="shizuku_no_start">系統服務冇運行</string>
     <string name="sui_start">Sui服務已經運行</string>
     <string name="shizuku_start">Shizuku服務已經運行</string>
+    <string name="system_no_start">系統服務冇運行</string>
+    <string name="system_start">系統服務已經運行</string>
     <string name="accessibility_no_start">（可選）點擊申請無障礙權限</string>
     <string name="accessibility_start">無障礙服務已經運行</string>
     <string name="overlay_no_start">點擊申請疊加窗口權限</string>

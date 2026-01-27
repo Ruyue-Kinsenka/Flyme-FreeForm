@@ -69,9 +69,6 @@ dependencies {
     implementation(libs.rikkax.borderview)
     implementation(libs.rikkax.recyclerview)
 
-    implementation(libs.shizuku.api)
-    implementation(libs.shizuku.provider)
-
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

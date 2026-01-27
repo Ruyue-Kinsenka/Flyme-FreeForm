@@ -26,7 +26,6 @@ import com.sunshine.freeform.hook.utils.HookTest
 import com.sunshine.freeform.service.KeepAliveService
 import com.sunshine.freeform.ui.guide.GuideActivity
 import com.sunshine.freeform.utils.PermissionUtils
-import rikka.sui.Sui
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
@@ -57,7 +56,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         sp = requireContext().getSharedPreferences(MiFreeform.APP_SETTINGS_NAME, Context.MODE_PRIVATE)
-        checkShizukuPermission()
+        checkSystemPermission()
         checkXposedPermission()
         checkAccessibilityPermission()
         accessibilityRFAR = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -65,7 +64,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
 
         binding.materialCardViewXposedInfo.setOnClickListener(this)
-        binding.materialCardViewShizukuInfo.setOnClickListener(this)
         binding.materialCardViewAccessibilityInfo.setOnClickListener(this)
         binding.buttonGuide.setOnClickListener(this)
         binding.buttonQuestion.setOnClickListener(this)
@@ -99,16 +97,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun checkShizukuPermission(): Boolean {
-        val result = MiFreeform.me?.isRunning?.value!!
+    private fun checkSystemPermission(): Boolean {
+        val result = MiFreeform.me?.isRunning?.value ?: false
         if (result) {
             binding.infoShizukuBg.setBackgroundColor(resources.getColor(R.color.success_color))
             binding.imageViewShizukuService.setImageDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_done))
-            binding.textViewShizukuServiceInfo.text = if (Sui.isSui()) getString(R.string.sui_start_short) else getString(R.string.shizuku_start_short)
+            binding.textViewShizukuServiceInfo.text = getString(R.string.system_start_short)
         } else {
             binding.infoShizukuBg.setBackgroundColor(resources.getColor(R.color.warn_color))
             binding.imageViewShizukuService.setImageDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_error_white))
-            binding.textViewShizukuServiceInfo.text = getString(R.string.shizuku_no_start)
+            binding.textViewShizukuServiceInfo.text = getString(R.string.system_no_start)
         }
         return result
     }
@@ -140,15 +138,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                         create().show()
                     }
                 }
-            }
-            R.id.materialCardView_shizuku_info -> {
-                MiFreeform.me?.initShizuku()
-                if (checkShizukuPermission()) {
-                    Snackbar.make(binding.root, getString(R.string.shizuku_start), Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Snackbar.make(binding.root, getString(R.string.try_to_init_shizuku), Snackbar.LENGTH_SHORT).show()
-                }
-
             }
 
             R.id.materialCardView_accessibility_info -> {

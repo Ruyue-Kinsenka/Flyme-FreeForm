@@ -12,7 +12,7 @@
     <string name="reject">رفض</string>
     <string name="agree">موافق</string>
     <string name="lorem_ipsum">" "</string>
-    <string name="service_not_running">خدمة Shizuku/Sui غير نشطة، هل قمت بتفويض Shizuku/Sui لـ Flyme-Freeform؟</string>
+    <string name="service_not_running">خدمة النظام غير نشطة</string>
     <string name="overlay_no_permission">لا يوجد إذن نافذة عائمة</string>
     <string name="app_is_running">التطبيق بالفعل في وضع حر</string>
     <string name="settings">الإعدادات</string>
@@ -34,6 +34,7 @@
     <string name="start_qq_fail">فشل في فتح QQ</string>
     <string name="sui_start_short">تم تفعيل Sui</string>
     <string name="shizuku_start_short">تم تفعيل Shizuku</string>
+    <string name="system_start_short">خدمة النظام نشطة</string>
     <string name="xposed_start_short">يوجد Xposed</string>
     <string name="accessibility_desc">خدمة الحفاظ على الحياة لـ Mi-Freeform. هذه الخدمة يمكن أن تضمن بقاء Mi-Freeform في الخلفية. Mi-Freeform لا تجمع أي معلومات من خلال هذه الخدمة.</string>
     <string name="request_overlay_permission_fail">غير قادر على الانتقال إلى واجهة الإعدادات، يرجى الذهاب يدويًا إلى الإعدادات لتمكين إذن "العرض فوق واجهات التطبيقات الأخرى" لـ Mi-Freeform</string>
@@ -45,10 +46,12 @@
     <string name="edit_apps">تعديل</string>
     <string name="xposed_no_start">(اختياري) Xposed غير مفعل</string>
     <string name="xposed_start">يوجد Xposed، يرجى التحقق من إطار النظام وإعادة التشغيل</string>
-    <string name="permission_info">لضمان التشغيل السليم للبرنامج، يحتاج Mi-Freeform إلى طلب الأذونات التالية. من بينها، يمكن أن يمنع إذن Xposed التطبيق في الوضع الحر من الانتقال إلى الشاشة الكاملة؛ إذن Shizuku/Sui يستخدم لفتح الوظائف الأساسية مثل الوضع الحر؛ إذن الوصول يستخدم لضمان بقاء Mi-Freeform؛ إذن نافذة العائمة يستخدم لعرض واجهة الوضع الحر؛ حقوق استخدام الإشعارات تستخدم لفتح الوضع الحر لتطبيق الإشعارات.</string>
-    <string name="shizuku_no_start">Shizuku/Sui</string>
+    <string name="permission_info">لضمان التشغيل السليم للبرنامج، يحتاج Mi-Freeform إلى طلب الأذونات التالية. من بينها، يمكن أن يمنع إذن Xposed التطبيق في الوضع الحر من الانتقال إلى الشاشة الكاملة؛ إذن النظام يستخدم لفتح الوظائف الأساسية مثل الوضع الحر؛ إذن الوصول يستخدم لضمان بقاء Mi-Freeform؛ إذن نافذة العائمة يستخدم لعرض واجهة الوضع الحر؛ حقوق استخدام الإشعارات تستخدم لفتح الوضع الحر لتطبيق الإشعارات.</string>
+    <string name="shizuku_no_start">خدمة النظام غير نشطة</string>
     <string name="sui_start">خدمة Sui تعمل بالفعل</string>
     <string name="shizuku_start">خدمة Shizuku تعمل بالفعل</string>
+    <string name="system_no_start">خدمة النظام غير نشطة</string>
+    <string name="system_start">خدمة النظام تعمل بالفعل</string>
     <string name="accessibility_no_start">(اختياري) انقر لتقديم طلب الوصول</string>
     <string name="accessibility_start">خدمات الوصول تعمل بالفعل</string>
     <string name="overlay_no_start">انقر لتقديم طلب أذونات نافذة عائمة</string>

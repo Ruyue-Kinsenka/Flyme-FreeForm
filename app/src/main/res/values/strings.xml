@@ -12,7 +12,7 @@
     <string name="reject">Reject</string>
     <string name="agree">Agree</string>
     <string name="lorem_ipsum">" "</string>
-    <string name="service_not_running">Shizuku/Sui service is not running, have you authorized Shizuku/Sui for Flyme-Freefrom?</string>
+    <string name="service_not_running">System service is not running</string>
     <string name="overlay_no_permission">No floating window permission</string>
     <string name="app_is_running">The app is already in freeform mode</string>
     <string name="settings">Settings</string>
@@ -34,6 +34,7 @@
     <string name="start_qq_fail">Failed to open QQ</string>
     <string name="sui_start_short">Sui activated</string>
     <string name="shizuku_start_short">Shizuku is active</string>
+    <string name="system_start_short">System service is active</string>
     <string name="xposed_start_short">Xposed exists</string>
     <string name="accessibility_desc">Mi-Freeform keep alive service. This service can ensure the background survival of Mi-Freeform. Mi-Freeform does not collect any information through this service.</string>
     <string name="request_overlay_permission_fail">Unable to jump to the settings interface, please manually go to the settings to enable the "display on top of other application interfaces" permission of the Mi-Freeform</string>
@@ -49,9 +50,11 @@
     <string name="xposed_no_start">(Optional) Xposed not activated</string>
     <string name="xposed_start">Xposed exists, please check the system framework and restart</string>
     <string name="permission_info">In order to ensure the normal operation of the software, Mi-Freeform needs to apply for the following permissions. Among them, the Xposed permission can prevent the application in the freeform from jumping out to the full screen; the Shizuku/Sui permission is used to open core functions such as the freeform; the accessibility permission is used to ensure the survival of the Mi-Freeform; the overlay window permission is used to display the freeform interface; notification The usage rights are used to open the freeform of the notification app.</string>
-    <string name="shizuku_no_start">Shizuku/Sui</string>
+    <string name="shizuku_no_start">System service not running</string>
     <string name="sui_start">Sui service is already running</string>
     <string name="shizuku_start">Shizuku service is already running</string>
+    <string name="system_no_start">System service not running</string>
+    <string name="system_start">System service is running</string>
     <string name="accessibility_no_start">(Optional) Click to apply for accessibility</string>
     <string name="accessibility_start">Accessibility services are already running</string>
     <string name="overlay_no_start">Click to apply for overlay window permissions</string>
@@ -72,8 +75,10 @@
     <string name="compatible_summary">Use compatibility mode to start the freeform, this mode can solve the problem of abnormal interface size such as software notification in the freeform and full screen. Compatibility mode widget interface scaling is supported in the next version.</string>
     <string name="category_freeform">freeform settings</string>
     <string name="setting_freeform_dpi_title">Freeform interface scaling</string>
-    <string name="use_sui_refuse_to_fullscreen_title">Use Shizuku/Sui to prevent apps from popping out of freeform to full screen (experimental)</string>
-    <string name="use_sui_refuse_to_fullscreen_summary">Currently only supports Android 12+. This feature is recommended to be enabled only when there is no Xposed or Xposed blocking fails. Try using Shizuku/Sui to prevent apps inside the freeform from popping out of the freeform to full screen. This function is still under testing, and there is no guarantee that the blocking will be successful, and it will cause problems such as screen flickering, freezing, etc.</string>
+    <string name="use_sui_refuse_to_fullscreen_title">Prevent apps from popping out of freeform to full screen (experimental)</string>
+    <string name="use_sui_refuse_to_fullscreen_summary">Currently only supports Android 12+. This feature is recommended to be enabled only when there is no Xposed or Xposed blocking fails. Try using system APIs to prevent apps inside the freeform from popping out of the freeform to full screen. This function is still under testing, and there is no guarantee that the blocking will be successful, and it will cause problems such as screen flickering, freezing, etc.</string>
+    <string name="refuse_to_fullscreen_title">Prevent apps from popping out of freeform to full screen (experimental)</string>
+    <string name="refuse_to_fullscreen_summary">Currently only supports Android 12+. This feature is recommended to be enabled only when there is no Xposed or Xposed blocking fails. Try using system APIs to prevent apps inside the freeform from popping out of the freeform to full screen. This function is still under testing, and there is no guarantee that the blocking will be successful, and it will cause problems such as screen flickering, freezing, etc.</string>
     <string name="category_floating">sidebar</string>
     <string name="switch_floating">Global sidebar</string>
     <string name="switch_floating_summary">Open freeform apps via sidebar</string>

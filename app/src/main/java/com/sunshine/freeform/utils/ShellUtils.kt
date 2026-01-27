@@ -2,8 +2,6 @@ package com.sunshine.freeform.utils
 
 import android.util.Log
 import com.sunshine.freeform.utils.ShellUtils
-import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException

@@ -20,9 +20,8 @@ import com.sunshine.freeform.app.MiFreeform
 import com.sunshine.freeform.bean.MotionEventBean
 import com.sunshine.freeform.databinding.ViewFreeformBinding
 import com.sunshine.freeform.ui.freeform.*
+import com.sunshine.freeform.utils.SystemServiceHelper
 import kotlinx.coroutines.*
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.math.abs
@@ -294,18 +293,18 @@ class FreeformStudyViewNew(
             setDisplayIdMethod = MotionEvent::class.java.getMethod("setDisplayId", Int::class.javaPrimitiveType)
         }
         try {
-            activityTaskManager = IActivityTaskManager.Stub.asInterface(ShizukuBinderWrapper(SystemServiceHelper.getSystemService("activity_task")))
+            activityTaskManager = SystemServiceHelper.getActivityTaskManager()
             //目前仅支持Android Q及以上版本
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 activityTaskManager?.registerTaskStackListener(taskStackListener)
             }
-            activityManager = IActivityManager.Stub.asInterface(ShizukuBinderWrapper(SystemServiceHelper.getSystemService("activity")))
+            activityManager = SystemServiceHelper.getActivityManager()
         }catch (e: Exception) {}
         try {
-            inputManager = IInputManager.Stub.asInterface(ShizukuBinderWrapper(SystemServiceHelper.getSystemService("input")))
+            inputManager = SystemServiceHelper.getInputManager()
         }catch (e: Exception) {}
         try {
-            iWindowManager = IWindowManager.Stub.asInterface(ShizukuBinderWrapper(SystemServiceHelper.getSystemService("window")))
+            iWindowManager = SystemServiceHelper.getWindowManager()
         } catch (e: Exception) {}
     }
 
@@ -1123,7 +1122,7 @@ class FreeformStudyViewNew(
     }
 
     init {
-        if (MiFreeform.me.pingServiceBinder()) {
+        if (com.sunshine.freeform.utils.ServiceUtils.isInitialized()) {
             //尝试恢复小窗状态
             initSystemService()
             initConfig()
@@ -1131,7 +1130,7 @@ class FreeformStudyViewNew(
             initView()
         }
         else {
-            MiFreeform.me.initShizuku()
+            com.sunshine.freeform.utils.SystemServiceHelper.init(context)
             Toast.makeText(context, context.getString(R.string.service_not_running), Toast.LENGTH_SHORT).show()
         }
     }
