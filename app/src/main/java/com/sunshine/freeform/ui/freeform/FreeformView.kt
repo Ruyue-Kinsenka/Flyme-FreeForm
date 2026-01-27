@@ -585,9 +585,17 @@ class FreeformView(
     }
 
     private fun initTextureViewListener() {
-        //冷启动监听
         var updateFrameCount = 0
         var initFinish = false
+
+        val initTimeoutRunnable = Runnable {
+            if (!initFinish) {
+                binding.lottieView.cancelAnimation()
+                binding.lottieView.animate().alpha(0f).setDuration(200).start()
+                binding.textureView.animate().alpha(1f).setDuration(200).start()
+                initFinish = true
+            }
+        }
 
         binding.textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(
@@ -597,6 +605,8 @@ class FreeformView(
             ) {
                 surface.setDefaultBufferSize(freeformScreenWidth, freeformScreenHeight)
                 virtualDisplay.surface = Surface(surface)
+                
+                binding.textureView.postDelayed(initTimeoutRunnable, 3000)
             }
 
             override fun onSurfaceTextureSizeChanged(
@@ -608,6 +618,7 @@ class FreeformView(
             }
 
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                binding.textureView.removeCallbacks(initTimeoutRunnable)
                 return true
             }
 
@@ -615,6 +626,7 @@ class FreeformView(
                 if (!initFinish) {
                     ++updateFrameCount
                     if (updateFrameCount > 2) {
+                        binding.textureView.removeCallbacks(initTimeoutRunnable)
                         binding.lottieView.cancelAnimation()
                         binding.lottieView.animate().alpha(0f).setDuration(200).start()
                         binding.textureView.animate().alpha(1f).setDuration(200).start()
