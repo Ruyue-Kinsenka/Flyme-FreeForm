@@ -21,7 +21,7 @@ class FloatingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_floating)
 
         val sp = getSharedPreferences(MiFreeform.APP_SETTINGS_NAME, Context.MODE_PRIVATE)
-        when (sp.getInt("service_type", KeepAliveService.SERVICE_TYPE)) {
+        when (sp.getInt("service_type", ForegroundService.SERVICE_TYPE)) {
             KeepAliveService.SERVICE_TYPE -> {
                 if (PermissionUtils.isAccessibilitySettingsOn(this)) {
                     sp.edit().putBoolean("to_show_floating", !sp.getBoolean("to_show_floating", false)).apply()

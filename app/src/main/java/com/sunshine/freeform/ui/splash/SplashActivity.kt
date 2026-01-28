@@ -52,7 +52,7 @@ class SplashActivity : AppCompatActivity() {
      * 检查米窗所需要的权限
      */
     private fun checkPermission(): Boolean {
-        when(viewModel.getIntSp("service_type", KeepAliveService.SERVICE_TYPE)) {
+        when(viewModel.getIntSp("service_type", ForegroundService.SERVICE_TYPE)) {
             ForegroundService.SERVICE_TYPE -> {
                 if (!ServiceUtils.isServiceWork(this, "com.sunshine.freeform.service.ForegroundService")) {
                     startForegroundService(Intent(this, ForegroundService::class.java))

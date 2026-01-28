@@ -23,6 +23,7 @@ import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
 import com.sunshine.freeform.databinding.FragmentHomeBinding
 import com.sunshine.freeform.hook.utils.HookTest
+import com.sunshine.freeform.service.ForegroundService
 import com.sunshine.freeform.service.KeepAliveService
 import com.sunshine.freeform.ui.guide.GuideActivity
 import com.sunshine.freeform.utils.PermissionUtils
@@ -80,7 +81,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private fun checkAccessibilityPermission() {
         val result = PermissionUtils.isAccessibilitySettingsOn(requireContext())
 
-        when (sp.getInt("service_type", KeepAliveService.SERVICE_TYPE)) {
+        when (sp.getInt("service_type", ForegroundService.SERVICE_TYPE)) {
             KeepAliveService.SERVICE_TYPE -> {
                 if (!result) {
                     binding.materialCardViewAccessibilityInfo.visibility = View.VISIBLE

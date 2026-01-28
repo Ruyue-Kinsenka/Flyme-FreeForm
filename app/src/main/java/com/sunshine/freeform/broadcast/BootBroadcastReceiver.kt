@@ -17,7 +17,7 @@ class BootBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val sp = context.getSharedPreferences(MiFreeform.APP_SETTINGS_NAME, Context.MODE_PRIVATE)
         if (intent.action == action_boot) {
-            if (sp.getInt("service_type", KeepAliveService.SERVICE_TYPE) == ForegroundService.SERVICE_TYPE)
+            if (sp.getInt("service_type", ForegroundService.SERVICE_TYPE) == ForegroundService.SERVICE_TYPE)
                 context.startForegroundService(Intent(context, ForegroundService::class.java))
         }
     }

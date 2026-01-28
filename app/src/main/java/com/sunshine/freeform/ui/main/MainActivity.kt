@@ -32,13 +32,12 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager.apply {
             adapter = object : FragmentStateAdapter(this@MainActivity) {
                 override fun getItemCount(): Int {
-                    return 3
+                    return 2
                 }
 
                 override fun createFragment(position: Int): Fragment {
                     return when (position) {
-                        0 -> HomeFragment()
-                        1 -> ChooseAppsFragment()
+                        0 -> ChooseAppsFragment()
                         else -> SettingFragment()
                     }
                 }
@@ -50,21 +49,17 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             isUserInputEnabled = false
-            offscreenPageLimit = 2
+            offscreenPageLimit = 1
         }
         binding.navView.apply {
             setOnItemSelectedListener { item ->
                 when (item.itemId) {
-                    R.id.navigation_home -> {
+                    R.id.navigation_apps -> {
                         binding.viewPager.currentItem = 0
                     }
 
-                    R.id.navigation_apps -> {
-                        binding.viewPager.currentItem = 1
-                    }
-
                     else -> {
-                        binding.viewPager.currentItem = 2
+                        binding.viewPager.currentItem = 1
                     }
                 }
                 true
