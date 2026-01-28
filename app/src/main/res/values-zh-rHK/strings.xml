@@ -10,10 +10,6 @@
 
     <!--SplashActivity-->
     <string name="mi_freeform_not_support">米窗僅支援Android 10及以上系統</string>
-    <string name="privacy_title">隱私政策</string>
-    <string name="privacy_message">開發者名稱：KindBrave\n\n版本生效日期：2022/8/31\n\n隱私政策版本：1\n\n歡迎你使用米窗，米窗非常重視用戶嘅隱私，米窗本體唔會收集、存儲、上傳任何用戶信息；但係米窗使用咗Bugly，Bugly使用過程中可能會收集用戶信息，Bugly隱私政策請見下文中關於Bugly嘅描述。\n\n請仔細閱讀並理解以下內容，如果你唔同意米窗嘅隱私政策或者對米窗嘅隱私政策有疑問，請唔好使用米窗。\n\n1.米窗本體\n為咗保證米窗嘅正常運行，米窗需要申請以下可能涉及隱私嘅權限：\n\t1)無障礙權限\n\t\t無障礙權限用於側邊欄嘅展示等功能，主要利用其高保活能力特性，米窗冇使用無障礙權限對系統、用戶進行任何監控。\n\t2)通知使用權限\n\t\t通知使用權係可選權限，即你可以根據自己嘅情況選擇授權或者唔授權。通知使用權用戶接管通知以對通知添加"小窗打開"功能，米窗雖然獲取到通知內容，但係冇對其進行任何分析、存儲、上傳。\n\n2.Bugly\nBugly係騰訊旗下一個Bug收集嘅庫，米窗使用Bugly僅用於收集Bug。\n其中，Bugly會收集設備嘅一啲信息，包括Andorid版本號、CPU架構等；會使用互聯網權限上傳崩潰日誌。\n更詳細嘅Bugly隱私策略，請閱讀《Bugly SDK個人信息保護規則》，網址：https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56</string>
-    <string name="agree">同意</string>
-    <string name="reject">拒絕</string>
 
     <!--FreeformView-->
     <string name="service_not_running">系統服務冇運行</string>

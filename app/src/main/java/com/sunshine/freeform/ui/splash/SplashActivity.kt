@@ -31,23 +31,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[SplashViewModel::class.java]
 
-        if (viewModel.getIntSp("version_privacy", -1) < MiFreeform.VERSION_PRIVACY) {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.privacy_title))
-                .setMessage(getString(R.string.privacy_message))
-                .setPositiveButton(getString(R.string.agree)) {_, _ ->
-                    viewModel.putIntSp("version_privacy", MiFreeform.VERSION_PRIVACY)
-
-                    toCheckPermission()
-                }
-                .setNegativeButton(getString(R.string.reject)) {_, _ ->
-                    finish()
-                }
-                .setCancelable(false)
-                .create().show()
-        } else {
-            toCheckPermission()
-        }
+        toCheckPermission()
     }
 
     private fun toCheckPermission() {
