@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
+import com.sunshine.freeform.broadcast.ShowAllAppsBroadcastReceiver
 import com.sunshine.freeform.broadcast.StartFreeformReceiver
 import com.sunshine.freeform.ui.floating.ChooseAppFloatingView
 import com.sunshine.freeform.ui.floating.FloatingActivity
@@ -80,6 +81,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
     private lateinit var displayManager: DisplayManager
 
     private var startFreeformReceiver = StartFreeformReceiver()
+    private var showAllAppsReceiver = ShowAllAppsBroadcastReceiver()
 
     //获取默认屏幕
     private lateinit var defaultDisplay: Display
@@ -117,6 +119,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
         sp.registerOnSharedPreferenceChangeListener(this)
         if (sp.getInt("service_type", SERVICE_TYPE) == SERVICE_TYPE) {
             registerReceiver(startFreeformReceiver, IntentFilter("com.sunshine.freeform.start_freeform"), RECEIVER_EXPORTED)
+            registerReceiver(showAllAppsReceiver, IntentFilter(ShowAllAppsBroadcastReceiver.ACTION_SHOW_ALL_APPS), RECEIVER_EXPORTED)
 
             //q221208.1 修复屏幕旋转后侧边栏不贴边的问题
             try {
@@ -216,6 +219,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
         sp.unregisterOnSharedPreferenceChangeListener(this)
 
         unregisterReceiver(startFreeformReceiver)
+        unregisterReceiver(showAllAppsReceiver)
 
         iWindowManager.removeRotationWatcher(rotationWatcher)
         stopService(Intent(this, FreeformService::class.java))
@@ -252,6 +256,14 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
                     //修复 可以打开多个选择应用界面的情况 q220909.1
                     isShowingChooseApp = true
                     chooseAppFloatingView.showFloatingView()
+                }
+            }
+            //显示所有应用
+            "to_show_all_apps" -> {
+                if (!isShowingChooseApp) {
+                    removeFloating()
+                    isShowingChooseApp = true
+                    chooseAppFloatingView.showAllApps()
                 }
             }
             "floating_alpha" -> {
@@ -428,6 +440,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
 
     override fun onChooseAppWindowRemove() {
         isShowingChooseApp = false
+        sp.edit().putBoolean("to_show_all_apps", false).apply()
         if (getBooleanSp("show_floating", false) && !isShowingFloating) {
             showFloating()
         }

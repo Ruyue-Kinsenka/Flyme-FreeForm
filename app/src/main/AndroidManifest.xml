@@ -40,7 +40,7 @@
             android:exported="true"
             android:taskAffinity=":splash">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" /> />
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
@@ -127,6 +127,14 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.ShowAllAppsBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.sunshine.freeform.SHOW_ALL_APPS" />
             </intent-filter>
         </receiver>
         <meta-data

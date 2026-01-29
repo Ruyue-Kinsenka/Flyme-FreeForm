@@ -139,6 +139,10 @@ class ChooseAppFloatingView(
         }
     }
 
+    fun showAllApps() {
+        showAllAppsView()
+    }
+
     /**
      * 屏幕方向改变监听
      */

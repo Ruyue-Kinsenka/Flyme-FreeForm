@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
+import com.sunshine.freeform.broadcast.ShowAllAppsBroadcastReceiver
 import com.sunshine.freeform.broadcast.StartFreeformReceiver
 import com.sunshine.freeform.ui.floating.ChooseAppFloatingView
 import com.sunshine.freeform.ui.freeform.FreeformService
@@ -77,6 +78,7 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
     private lateinit var defaultDisplay: Display
 
     private var startFreeformReceiver = StartFreeformReceiver()
+    private var showAllAppsReceiver = ShowAllAppsBroadcastReceiver()
 
     //屏幕监听
     private val displayListener = object : DisplayManager.DisplayListener {
@@ -106,6 +108,7 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
         stopService(Intent(this, ForegroundService::class.java))
 
         registerReceiver(startFreeformReceiver, IntentFilter("com.sunshine.freeform.start_freeform"), RECEIVER_EXPORTED)
+        registerReceiver(showAllAppsReceiver, IntentFilter(ShowAllAppsBroadcastReceiver.ACTION_SHOW_ALL_APPS), RECEIVER_EXPORTED)
 
         try {
             iWindowManager = SystemServiceHelper.getWindowManager()
@@ -178,6 +181,7 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
         sp.unregisterOnSharedPreferenceChangeListener(this)
 
         unregisterReceiver(startFreeformReceiver)
+        unregisterReceiver(showAllAppsReceiver)
 
         iWindowManager.removeRotationWatcher(rotationWatcher)
         stopService(Intent(this, FreeformService::class.java))
@@ -214,6 +218,14 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
                     //修复 可以打开多个选择应用界面的情况 q220909.1
                     isShowingChooseApp = true
                     chooseAppFloatingView.showFloatingView()
+                }
+            }
+            //显示所有应用
+            "to_show_all_apps" -> {
+                if (!isShowingChooseApp) {
+                    removeFloating()
+                    isShowingChooseApp = true
+                    chooseAppFloatingView.showAllApps()
                 }
             }
             "service_type" -> {
@@ -395,6 +407,7 @@ class KeepAliveService : AccessibilityService(), SharedPreferences.OnSharedPrefe
 
     override fun onChooseAppWindowRemove() {
         isShowingChooseApp = false
+        sp.edit().putBoolean("to_show_all_apps", false).apply()
         if (getBooleanSp("show_floating", false) && !isShowingFloating) {
             showFloating()
         }
