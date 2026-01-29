@@ -24,6 +24,7 @@ import com.sunshine.freeform.ui.floating_apps_sort.FloatingAppsSortActivity
 import com.sunshine.freeform.ui.choose_apps.ChooseAppsFragment
 import com.sunshine.freeform.room.FreeFormAppsEntity
 import com.sunshine.freeform.ui.freeform.*
+import com.sunshine.freeform.utils.PreferenceHelper
 import java.lang.reflect.Method
 
 /**
@@ -113,17 +114,7 @@ class ChooseAppFloatingAdapter(
                         .into(holder.icon)
                     holder.appName.text = getLabel(appInfo, apps[position - 1].userId)
                     holder.click.setOnClickListener {
-                        context.startService(
-                            Intent(context, FreeformService::class.java)
-                                .setAction(FreeformService.ACTION_START_INTENT)
-                                .putExtra(Intent.EXTRA_USER, apps[position - 1].userId)
-                                .putExtra(Intent.EXTRA_INTENT,
-                                    Intent(Intent.ACTION_MAIN)
-                                        .setComponent(ComponentName(packageName, activityName))
-                                        .setPackage(packageName)
-                                        .addCategory(Intent.CATEGORY_LAUNCHER)
-                                )
-                        )
+                        launchApp(context, packageName)
                         callback.onClick()
                     }
                     //长按进入排序界面
@@ -151,6 +142,39 @@ class ChooseAppFloatingAdapter(
         } else {
             "${context.packageManager.getApplicationLabel(applicationInfo)}-${context.getString(R.string.fenshen)}${userId}"
         }
+    }
+
+    private fun launchApp(context: Context, packageName: String) {
+        val useBubbleMode = PreferenceHelper.getPopupViewMode(context, true)
+
+        if (useBubbleMode) {
+            val intent = Intent("org.avium.LAUNCH_BUBBLE")
+            intent.putExtra("package_name", packageName)
+            intent.addFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND)
+            context.sendBroadcast(intent)
+        } else {
+            launchAppNormally(context, packageName)
+        }
+    }
+
+    private fun launchAppNormally(context: Context, packageName: String) {
+        var activityName = ""
+        resolveInfoList.forEach {
+            it.activityInfo
+            if (it.activityInfo.applicationInfo.packageName == packageName) {
+                activityName = it.activityInfo.name
+            }
+        }
+        context.startService(
+            Intent(context, FreeformService::class.java)
+                .setAction(FreeformService.ACTION_START_INTENT)
+                .putExtra(Intent.EXTRA_INTENT,
+                    Intent(Intent.ACTION_MAIN)
+                        .setComponent(ComponentName(packageName, activityName))
+                        .setPackage(packageName)
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                )
+        )
     }
 
     private fun getActivityOptions(): ActivityOptions? {

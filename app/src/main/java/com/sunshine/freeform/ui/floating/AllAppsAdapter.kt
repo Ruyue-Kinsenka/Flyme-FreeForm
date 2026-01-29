@@ -20,6 +20,7 @@ import com.sunshine.freeform.systemapi.UserHandle
 import com.sunshine.freeform.ui.freeform.FreeformConfig
 import com.sunshine.freeform.ui.freeform.FreeformService
 import com.sunshine.freeform.ui.freeform.FreeformView
+import com.sunshine.freeform.utils.PreferenceHelper
 import java.lang.reflect.Method
 import kotlin.collections.ArrayList
 
@@ -57,6 +58,7 @@ class AllAppsAdapter(
         val applicationInfo = allAppsList[position].applicationInfo
         val packageName = applicationInfo.packageName
         val activityName = allAppsList[position].name
+        val userId = UserHandle.getUserId(allAppsList[position].user, allAppsList[position].applicationInfo.uid)
         try {
             Glide.with(context)
                 .load(applicationInfo.loadIcon(context.packageManager))
@@ -64,18 +66,7 @@ class AllAppsAdapter(
                 .into(holder.icon)
             holder.appName.text = allAppsList[position].label
             holder.click.setOnClickListener {
-                val userId = UserHandle.getUserId(allAppsList[position].user, allAppsList[position].applicationInfo.uid)
-                context.startService(
-                    Intent(context, FreeformService::class.java)
-                        .setAction(FreeformService.ACTION_START_INTENT)
-                        .putExtra(Intent.EXTRA_USER, userId)
-                        .putExtra(Intent.EXTRA_INTENT,
-                            Intent(Intent.ACTION_MAIN)
-                                .setComponent(ComponentName(packageName, activityName))
-                                .setPackage(packageName)
-                                .addCategory(Intent.CATEGORY_LAUNCHER)
-                        )
-                )
+                launchApp(context, packageName, activityName, userId)
                 callback.onClick()
             }
         } catch (e: PackageManager.NameNotFoundException) {}
@@ -103,5 +94,32 @@ class AllAppsAdapter(
 
         }
         return options
+    }
+
+    private fun launchApp(context: Context, packageName: String, activityName: String, userId: Int) {
+        val useBubbleMode = PreferenceHelper.getPopupViewMode(context, true)
+
+        if (useBubbleMode) {
+            val intent = Intent("org.avium.LAUNCH_BUBBLE")
+            intent.putExtra("package_name", packageName)
+            intent.addFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND)
+            context.sendBroadcast(intent)
+        } else {
+            launchAppNormally(context, packageName, activityName, userId)
+        }
+    }
+
+    private fun launchAppNormally(context: Context, packageName: String, activityName: String, userId: Int) {
+        context.startService(
+            Intent(context, FreeformService::class.java)
+                .setAction(FreeformService.ACTION_START_INTENT)
+                .putExtra(Intent.EXTRA_USER, userId)
+                .putExtra(Intent.EXTRA_INTENT,
+                    Intent(Intent.ACTION_MAIN)
+                        .setComponent(ComponentName(packageName, activityName))
+                        .setPackage(packageName)
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                )
+        )
     }
 }
