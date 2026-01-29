@@ -211,7 +211,7 @@ public class WaveSideBarView extends View {
 
         mLettersPaint.reset();
         mLettersPaint.setStyle(Paint.Style.FILL);
-        mLettersPaint.setColor(Color.parseColor("#F9F9F9"));
+        mLettersPaint.setColor(0xE0FFFFFF);
         mLettersPaint.setAntiAlias(true);
         canvas.drawRoundRect(rectF, mTextSize, mTextSize, mLettersPaint);
 

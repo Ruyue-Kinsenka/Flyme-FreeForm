@@ -25,6 +25,7 @@ import com.github.promeg.pinyinhelper.Pinyin
 import com.sunshine.freeform.R
 import com.sunshine.freeform.room.FreeFormAppsEntity
 import com.sunshine.freeform.ui.view.WaveSideBarView
+import com.sunshine.freeform.utils.BlurUtils
 import com.sunshine.freeform.utils.PackageUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -103,6 +104,7 @@ class ChooseAppFloatingView(
                     x = width / 2
                     windowAnimations = android.R.style.Animation_Dialog
                 }
+                BlurUtils.applyBlurEffect(floatingViewLayoutParams)
 
                 setFloatingViewContent(floatingView)
 
@@ -251,6 +253,7 @@ class ChooseAppFloatingView(
                 format = PixelFormat.RGBA_8888
                 gravity = Gravity.CENTER_VERTICAL
             }
+            BlurUtils.applyBlurEffect(layoutParams)
             val recyclerView = allAppsView!!.findViewById<RecyclerView>(R.id.recyclerView)
             val lottieAnimationView = allAppsView!!.findViewById<LottieAnimationView>(R.id.lottieView)
 
