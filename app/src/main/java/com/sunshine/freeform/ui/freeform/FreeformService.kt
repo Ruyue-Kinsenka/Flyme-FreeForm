@@ -17,6 +17,7 @@ import android.os.Parcelable
 import android.os.SystemClock
 import android.util.Log
 import android.view.Display
+import com.sunshine.freeform.broadcast.LaunchMiniWindowReceiver
 import com.sunshine.freeform.utils.ServiceUtils
 import com.sunshine.freeform.utils.ServiceUtils.activityManager
 import dev.rikka.tools.refine.Refine
@@ -103,11 +104,16 @@ class FreeformService: Service(), ScreenListener.ScreenStateListener {
                 mUserId = intent.getIntExtra(Intent.EXTRA_USER, 0)
                 mIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT)
                 mComponentName = intent.getParcelableExtra(Intent.EXTRA_COMPONENT_NAME)
+                val launchMiniMode = intent.getBooleanExtra(LaunchMiniWindowReceiver.EXTRA_LAUNCH_MINI_MODE, false)
                 mFreeformView.config = mConfig
                 if (startIntent() < 0) {
                     return START_NOT_STICKY
                 }
-                startFreeformView()
+                if (launchMiniMode) {
+                    startFreeformViewToMini()
+                } else {
+                    startFreeformView()
+                }
             }
             ACTION_CALL_INTENT -> {
                 if (mIntent == null)
@@ -148,6 +154,14 @@ class FreeformService: Service(), ScreenListener.ScreenStateListener {
             mFreeformView.moveToFirst()
         } else {
             mFreeformView.showWindow()
+        }
+    }
+
+    private fun startFreeformViewToMini() {
+        if (mFreeformView.isFloating || mFreeformView.isHidden) {
+            mFreeformView.moveToFirst()
+        } else {
+            mFreeformView.showWindowToMini()
         }
     }
 

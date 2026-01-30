@@ -297,6 +297,7 @@ class FreeformView(
     var isFloating = false
     //挂起位置，0：是否在左，1：是否在上
     private val hangUpPosition = booleanArrayOf(false, true)
+    private var directToMiniMode = false
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private val taskStackListener = MTaskStackListener()
@@ -605,7 +606,13 @@ class FreeformView(
             ) {
                 surface.setDefaultBufferSize(freeformScreenWidth, freeformScreenHeight)
                 virtualDisplay.surface = Surface(surface)
-                
+
+                if (directToMiniMode && !isDestroy) {
+                    Log.d(TAG, "onSurfaceTextureAvailable: directToMiniMode=true, resetting scale to 1f")
+                    binding.freeformRoot.scaleX = 1f
+                    binding.freeformRoot.scaleY = 1f
+                }
+
                 binding.textureView.postDelayed(initTimeoutRunnable, 3000)
             }
 
@@ -638,6 +645,8 @@ class FreeformView(
     }
 
     fun showWindow() {
+        directToMiniMode = false
+
         initDisplay()
         initOrientationChangedListener()
         initTextureViewListener()
@@ -716,6 +725,116 @@ class FreeformView(
                 }
             }
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun showWindowToMini() {
+        directToMiniMode = true
+        Log.d(TAG, "showWindowToMini: directToMiniMode set to true")
+        initFloatViewSize()
+
+        freeformScreenHeight = (min(realScreenHeight, realScreenWidth) / config.widthHeightRatio).roundToInt()
+        freeformScreenWidth = (freeformScreenHeight * config.widthHeightRatio).roundToInt()
+
+        initDisplay()
+        initOrientationChangedListener()
+        initTextureViewListener()
+
+        val location = genFloatViewLocation()
+        if (lastFloatViewLocation[0] != -1) {
+            location[0] = lastFloatViewLocation[0]
+            location[1] = lastFloatViewLocation[1]
+        }
+
+        windowLayoutParams.apply {
+            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            flags =
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+            format = PixelFormat.RGBA_8888
+            windowAnimations = android.R.style.Animation_Dialog
+            width = hangUpViewWidth
+            height = hangUpViewHeight
+            x = location[0]
+            y = location[1]
+        }
+
+        setWindowNoUpdateAnimation()
+
+        backgroundViewLayoutParams.apply {
+            dimAmount = 0f
+            format = PixelFormat.RGBA_8888
+            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            width = WindowManager.LayoutParams.MATCH_PARENT
+            height = WindowManager.LayoutParams.MATCH_PARENT
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                    WindowManager.LayoutParams.FLAG_DIM_BEHIND or
+                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+        }
+
+        backgroundView.visibility = View.GONE
+        binding.bottomBar.root.alpha = 0f
+        binding.cardRoot.radius = context.resources.getDimension(R.dimen.card_corner_radius) * (hangUpViewWidth / rootWidth.toFloat())
+
+        val layoutParams = binding.cardRoot.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.topMargin = 0
+        layoutParams.bottomMargin = 0
+        layoutParams.rightMargin = 0
+        binding.cardRoot.layoutParams = layoutParams
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.textureView.setOnTouchListener(touchListener)
+        } else {
+            binding.textureView.setOnTouchListener(touchListenerPreQ)
+        }
+
+        runCatching {
+            windowManager.addView(backgroundView, backgroundViewLayoutParams)
+            windowManager.addView(binding.root, windowLayoutParams)
+        }.onFailure {
+            runCatching {
+                windowManager.removeViewImmediate(backgroundView)
+                windowManager.removeViewImmediate(binding.root)
+            }
+
+            if (Settings.canDrawOverlays(context)) {
+                windowManager.addView(backgroundView, backgroundViewLayoutParams.apply {
+                    type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                })
+                windowManager.addView(binding.root, windowLayoutParams.apply {
+                    type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                })
+            } else {
+                destroy()
+                runCatching {
+                    Toast.makeText(context, context.getString(R.string.request_overlay_permission), Toast.LENGTH_LONG).show()
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:${context.packageName}")
+                    )
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(
+                        intent
+                    )
+                }.onFailure {
+                    Toast.makeText(context, context.getString(R.string.request_overlay_permission_fail), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        binding.textureView.setOnTouchListener(FloatViewTouchListener())
+
+        isFloating = true
+        Log.d(TAG, "showWindowToMini: setting mScaleX=1f, mScaleY=1f")
+        mScaleX = 1f
+        mScaleY = 1f
+
+        setWindowEnableUpdateAnimation()
     }
 
     /**

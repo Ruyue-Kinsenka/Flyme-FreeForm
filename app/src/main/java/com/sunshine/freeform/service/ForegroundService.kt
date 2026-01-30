@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
+import com.sunshine.freeform.broadcast.LaunchMiniWindowReceiver
 import com.sunshine.freeform.broadcast.ShowAllAppsBroadcastReceiver
 import com.sunshine.freeform.broadcast.StartFreeformReceiver
 import com.sunshine.freeform.ui.floating.ChooseAppFloatingView
@@ -82,6 +83,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
 
     private var startFreeformReceiver = StartFreeformReceiver()
     private var showAllAppsReceiver = ShowAllAppsBroadcastReceiver()
+    private var launchMiniWindowReceiver = LaunchMiniWindowReceiver()
 
     //获取默认屏幕
     private lateinit var defaultDisplay: Display
@@ -120,6 +122,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
         if (sp.getInt("service_type", SERVICE_TYPE) == SERVICE_TYPE) {
             registerReceiver(startFreeformReceiver, IntentFilter("com.sunshine.freeform.start_freeform"), RECEIVER_EXPORTED)
             registerReceiver(showAllAppsReceiver, IntentFilter(ShowAllAppsBroadcastReceiver.ACTION_SHOW_ALL_APPS), RECEIVER_EXPORTED)
+            registerReceiver(launchMiniWindowReceiver, IntentFilter(LaunchMiniWindowReceiver.ACTION_LAUNCH_MINI_WINDOW), RECEIVER_EXPORTED)
 
             //q221208.1 修复屏幕旋转后侧边栏不贴边的问题
             try {
@@ -220,6 +223,7 @@ class ForegroundService : Service(), SharedPreferences.OnSharedPreferenceChangeL
 
         unregisterReceiver(startFreeformReceiver)
         unregisterReceiver(showAllAppsReceiver)
+        unregisterReceiver(launchMiniWindowReceiver)
 
         iWindowManager.removeRotationWatcher(rotationWatcher)
         stopService(Intent(this, FreeformService::class.java))

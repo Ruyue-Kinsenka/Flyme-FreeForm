@@ -137,6 +137,14 @@
                 <action android:name="com.sunshine.freeform.SHOW_ALL_APPS" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".broadcast.LaunchMiniWindowReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.avium.LAUNCHER_MINI_WINDOW" />
+            </intent-filter>
+        </receiver>
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
