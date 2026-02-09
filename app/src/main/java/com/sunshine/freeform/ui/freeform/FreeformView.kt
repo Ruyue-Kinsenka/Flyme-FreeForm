@@ -1379,11 +1379,13 @@ class FreeformView(
                         onStart = { isAnimating = true },
                         onEnd = {
                             isAnimating = false
-                            context.startService(
-                                Intent(context, FreeformService::class.java)
-                                    .setAction(FreeformService.ACTION_CALL_INTENT)
-                                    .putExtra(FreeformService.EXTRA_DISPLAY_ID, defaultDisplay.displayId)
-                            )
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                taskList.forEach { taskId ->
+                                    try {
+                                        activityTaskManager.moveRootTaskToDisplay(taskId, defaultDisplay.displayId)
+                                    } catch (_: IllegalArgumentException) {}
+                                }
+                            }
                             destroy()
                         }
                     )
@@ -2085,17 +2087,15 @@ class FreeformView(
             }
 
             if (taskList.contains(tId) && isFloating && newDisplayId == Display.DEFAULT_DISPLAY) {
-                context.startService(Intent(context, FreeformService::class.java).setAction(FreeformService.ACTION_START_INTENT).putExtra(Intent.EXTRA_INTENT, config.intent))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    activityTaskManager.moveRootTaskToDisplay(tId, defaultDisplay.displayId)
+                }
                 return
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (!isDestroy && taskList.contains(tId) && newDisplayId == Display.DEFAULT_DISPLAY) {
-                    if (config.useSuiRefuseToFullScreen)
-                        activityTaskManager.moveRootTaskToDisplay(tId, virtualDisplay.display.displayId)
-                    else
-                        // try relaunch
-                        context.startService(Intent(context, FreeformService::class.java).setAction(FreeformService.ACTION_CALL_INTENT))
+                    activityTaskManager.moveRootTaskToDisplay(tId, virtualDisplay.display.displayId)
                 }
             }
         }
