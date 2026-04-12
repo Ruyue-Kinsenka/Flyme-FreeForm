@@ -153,7 +153,7 @@ class ChooseAppFloatingAdapter(
             intent.addFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND)
             context.sendBroadcast(intent)
         } else {
-            launchAppNormally(context, packageName)
+            launchedappforavium(context, packageName)
         }
     }
 
@@ -175,6 +175,19 @@ class ChooseAppFloatingAdapter(
                         .addCategory(Intent.CATEGORY_LAUNCHER)
                 )
         )
+    }
+
+    private fun launchedappforavium(context: Context, packageName: String) {
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            val miniWindowOptions = ActivityOptions.makeBasic().apply {
+                setLaunchWindowingMode(102)
+            }
+
+            context.startActivity(intent, miniWindowOptions.toBundle())
+        }
     }
 
     private fun getActivityOptions(): ActivityOptions? {
